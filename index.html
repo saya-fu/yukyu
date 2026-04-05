@@ -812,6 +812,7 @@ function calcAndRender(){
 
 function buildAll(){
   buildMonthGrid(); buildModeGrid(); buildCalendar(); calcAndRender();
+  saveData();
 }
 
 function openImgModal(){ document.getElementById("imgModalOverlay").classList.add("open"); }
@@ -820,6 +821,23 @@ document.getElementById("imgModalOverlay").addEventListener("click",function(e){
   if(e.target===this) closeImgModal();
 });
 
+// ── LocalStorage 自動保存・読み込み ─────────────────────────────────────────
+const STORAGE_KEY = "yukyu_dayData_v1";
+
+function saveData() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(dayData)); }
+  catch(e) {}
+}
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) dayData = JSON.parse(saved);
+  } catch(e) {}
+}
+
+// 起動時にデータ読み込み→描画
+loadData();
 buildAll();
 </script>
 
