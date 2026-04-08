@@ -59,34 +59,29 @@ cursor: pointer; transition: all 0.18s; white-space: nowrap; box-shadow: var(–
 
 /* ── Tabs ── */
 .tabs {
-display: flex; gap: 0; margin-bottom: 20px;
-background: var(–surface);
-border: 1.5px solid var(–border-light);
-border-radius: var(–radius);
+display: flex; gap: 5px; margin-bottom: 20px;
+background: #dde6f0;
+border-radius: calc(var(–radius) + 2px);
+padding: 5px;
 box-shadow: var(–shadow-sm);
-overflow: visible;
-position: relative;
 }
 .tab-btn {
-flex: 1; padding: 12px 8px;
+flex: 1; padding: 10px 8px;
 background: transparent;
 border: none;
-border-right: 1px solid var(–border-light);
 font-family: var(–sans); font-size: 0.85rem; font-weight: 600;
-color: var(–text-dim); cursor: pointer; transition: all 0.15s;
-display: flex; align-items: center; justify-content: center; gap: 6px;
-border-radius: 0;
-position: relative;
+color: var(–text-sub); cursor: pointer; transition: all 0.18s;
+display: flex; align-items: center; justify-content: center; gap: 5px;
+border-radius: 8px;
 -webkit-appearance: none;
 appearance: none;
+white-space: nowrap;
 }
-.tab-btn:first-child { border-radius: calc(var(–radius) - 2px) 0 0 calc(var(–radius) - 2px); }
-.tab-btn:last-child  { border-right: none; border-radius: 0 calc(var(–radius) - 2px) calc(var(–radius) - 2px) 0; }
-.tab-btn:hover { background: var(–accent-bg); color: var(–accent); }
+.tab-btn:hover { color: var(–accent); }
 .tab-btn.active {
-background: var(–accent-bg);
+background: var(–surface);
 color: var(–accent);
-box-shadow: inset 0 -3px 0 0 var(–accent);
+box-shadow: 0 1px 6px rgba(0,80,160,0.13);
 }
 .tab-btn svg { flex-shrink: 0; }
 
@@ -291,10 +286,7 @@ min-width: 0; overflow: hidden; gap: 1px; user-select: none;
 
   <!-- タブ -->
 
-  <div class="tabs">
-    <button class="tab-btn active" id="tab-cal" onclick="switchTab(\'cal\')"><span style="display:inline-flex;align-items:center;gap:5px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>カレンダー</span></span></button>
-    <button class="tab-btn" id="tab-settings" onclick="switchTab(\'settings\')"><span style="display:inline-flex;align-items:center;gap:5px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>保有日数の設定</span></span></button>
-  </div>
+  <div class="tabs"><button class="tab-btn active" id="tab-cal" onclick="switchTab('cal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> カレンダー</button><button class="tab-btn" id="tab-settings" onclick="switchTab('settings')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> 保有日数の設定</button></div>
 
   <!-- カレンダータブ -->
 
