@@ -60,19 +60,34 @@ cursor: pointer; transition: all 0.18s; white-space: nowrap; box-shadow: var(–
 /* ── Tabs ── */
 .tabs {
 display: flex; gap: 0; margin-bottom: 20px;
-background: var(–surface); border: 1.5px solid var(–border-light);
-border-radius: var(–radius); overflow: hidden; box-shadow: var(–shadow-sm);
+background: var(–surface);
+border: 1.5px solid var(–border-light);
+border-radius: var(–radius);
+box-shadow: var(–shadow-sm);
+overflow: visible;
+position: relative;
 }
 .tab-btn {
-flex: 1; padding: 12px 8px; background: transparent; border: none;
+flex: 1; padding: 12px 8px;
+background: transparent;
+border: none;
+border-right: 1px solid var(–border-light);
 font-family: var(–sans); font-size: 0.85rem; font-weight: 600;
 color: var(–text-dim); cursor: pointer; transition: all 0.15s;
 display: flex; align-items: center; justify-content: center; gap: 6px;
-border-right: 1px solid var(–border-light);
+border-radius: 0;
+position: relative;
+-webkit-appearance: none;
+appearance: none;
 }
-.tab-btn:last-child { border-right: none; }
+.tab-btn:first-child { border-radius: calc(var(–radius) - 2px) 0 0 calc(var(–radius) - 2px); }
+.tab-btn:last-child  { border-right: none; border-radius: 0 calc(var(–radius) - 2px) calc(var(–radius) - 2px) 0; }
 .tab-btn:hover { background: var(–accent-bg); color: var(–accent); }
-.tab-btn.active { background: var(–accent-bg); color: var(–accent); border-bottom: 3px solid var(–accent); }
+.tab-btn.active {
+background: var(–accent-bg);
+color: var(–accent);
+box-shadow: inset 0 -3px 0 0 var(–accent);
+}
 .tab-btn svg { flex-shrink: 0; }
 
 .tab-pane { display: none; }
@@ -114,36 +129,37 @@ border-radius: 20px; font-size: 0.78rem; font-weight: 700; white-space: nowrap;
 .settings-note { font-size: 0.73rem; color: var(–text-dim); margin-top: 12px; line-height: 1.7; padding: 10px 12px; background: var(–bg); border-radius: 8px; }
 
 /* ── Month grid ── */
-.month-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 18px; }
-@media (max-width: 480px) { .month-grid { grid-template-columns: repeat(4, 1fr); } }
+.month-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 18px; }
+/* iPhoneでも6列維持 */
+@media (max-width: 390px) { .month-grid { grid-template-columns: repeat(4, 1fr); } }
 .month-btn {
-display: flex; flex-direction: column; align-items: center; padding: 9px 4px;
+display: flex; flex-direction: column; align-items: center; padding: 7px 2px;
 background: var(–surface); border: 1.5px solid var(–border-light); border-radius: 10px;
 cursor: pointer; transition: all 0.15s; gap: 2px; box-shadow: var(–shadow-sm);
 }
 .month-btn:hover { border-color: var(–accent-light); background: var(–accent-bg); }
 .month-btn.active { border-color: var(–accent); background: var(–accent-bg); box-shadow: 0 0 0 3px rgba(0,103,192,0.14); }
-.month-btn .m-name  { font-size: 0.92rem; font-weight: 700; color: var(–text); }
-.month-btn .m-quota { font-size: 0.66rem; color: var(–text-sub); font-weight: 500; }
+.month-btn .m-name  { font-size: 0.88rem; font-weight: 700; color: var(–text); }
+.month-btn .m-quota { font-size: 0.62rem; color: var(–text-sub); font-weight: 500; }
 .month-btn.active .m-name { color: var(–accent); }
 
 /* ── Mode panel ── */
-.mode-panel { background: var(–surface); border: 1.5px solid var(–border-light); border-radius: var(–radius); padding: 14px 16px; margin-bottom: 18px; box-shadow: var(–shadow-sm); }
+.mode-panel { background: var(–surface); border: 1.5px solid var(–border-light); border-radius: var(–radius); padding: 12px 14px; margin-bottom: 18px; box-shadow: var(–shadow-sm); }
 .mode-panel .section-label { margin-bottom: 11px; }
-.mode-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
-@media (max-width: 560px) { .mode-grid { grid-template-columns: repeat(5, 1fr); } }
-@media (max-width: 380px) { .mode-grid { grid-template-columns: repeat(4, 1fr); } }
+.mode-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
+/* iPhone SE以下のみ折り返し */
+@media (max-width: 375px) { .mode-grid { grid-template-columns: repeat(5, 1fr); } }
 .mode-btn {
-display: flex; flex-direction: column; align-items: center; gap: 4px;
-padding: 9px 4px 7px; border-radius: 10px; border: 1.5px solid var(–border-light);
+display: flex; flex-direction: column; align-items: center; gap: 3px;
+padding: 8px 2px 6px; border-radius: 10px; border: 1.5px solid var(–border-light);
 background: var(–bg); cursor: pointer; transition: all 0.14s;
 font-family: var(–sans); min-width: 0;
 }
 .mode-btn:hover { border-color: var(–accent-light); background: var(–accent-bg); }
-.mode-btn .mode-icon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: var(–text-sub); }
-.mode-btn .mode-icon svg { display: block; }
-.mode-btn .mode-label { font-size: 0.68rem; font-weight: 700; color: var(–text); white-space: nowrap; }
-.mode-btn .mode-desc  { font-size: 0.58rem; color: var(–text-dim); white-space: nowrap; }
+.mode-btn .mode-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; color: var(–text-sub); }
+.mode-btn .mode-icon svg { display: block; width: 18px; height: 18px; }
+.mode-btn .mode-label { font-size: 0.62rem; font-weight: 700; color: var(–text); white-space: nowrap; }
+.mode-btn .mode-desc  { font-size: 0.52rem; color: var(–text-dim); white-space: nowrap; }
 .mode-btn.active-mode { border-width: 2px; box-shadow: 0 0 0 3px rgba(0,103,192,0.13); }
 .mode-btn.mode-night.active-mode     { border-color:#0060b0; background:#deeeff; }
 .mode-btn.mode-night.active-mode .mode-icon { color:#0060b0; }
