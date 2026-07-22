@@ -142,9 +142,10 @@
   /* ── Mode panel ── */
   .mode-panel { background: var(--surface); border: 1.5px solid var(--border-light); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 18px; box-shadow: var(--shadow-sm); }
   .mode-panel .section-label { margin-bottom: 11px; }
-  .mode-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
+  .mode-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
   /* iPhone SE以下のみ折り返し */
-  @media (max-width: 375px) { .mode-grid { grid-template-columns: repeat(5, 1fr); } }
+  @media (max-width: 500px) { .mode-grid { grid-template-columns: repeat(6, 1fr); } }
+  @media (max-width: 375px) { .mode-grid { grid-template-columns: repeat(4, 1fr); } }
   .mode-btn {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
     padding: 8px 2px 6px; border-radius: 10px; border: 1.5px solid var(--border-light);
@@ -169,8 +170,12 @@
   .mode-btn.mode-rest-am.active-mode .mode-icon { color:#0a7a4a; }
   .mode-btn.mode-rest-pm.active-mode   { border-color:#0a7a4a; background:#d8f6e8; }
   .mode-btn.mode-rest-pm.active-mode .mode-icon { color:#0a7a4a; }
-  .mode-btn.mode-kousei.active-mode    { border-color:var(--kousei); background:var(--kousei-bg); }
-  .mode-btn.mode-kousei.active-mode .mode-icon { color:var(--kousei); }
+  .mode-btn.mode-kousei-full.active-mode { border-color:var(--kousei); background:var(--kousei-bg); }
+  .mode-btn.mode-kousei-full.active-mode .mode-icon { color:var(--kousei); }
+  .mode-btn.mode-kousei-am.active-mode   { border-color:var(--kousei); background:var(--kousei-bg); }
+  .mode-btn.mode-kousei-am.active-mode .mode-icon   { color:var(--kousei); }
+  .mode-btn.mode-kousei-pm.active-mode   { border-color:var(--kousei); background:var(--kousei-bg); }
+  .mode-btn.mode-kousei-pm.active-mode .mode-icon   { color:var(--kousei); }
   .mode-btn.mode-tokubetsu.active-mode { border-color:var(--tokubetsu); background:var(--tokubetsu-bg); }
   .mode-btn.mode-tokubetsu.active-mode .mode-icon { color:var(--tokubetsu); }
   .mode-btn.mode-clear.active-mode     { border-color:#888; background:#ebebeb; }
@@ -259,6 +264,60 @@
   .breakdown-row { display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; }
   .breakdown-row .br-label { color:var(--text-sub); display:flex; align-items:center; gap:7px; font-weight:500; }
   .breakdown-row .br-val   { font-weight:700; color:var(--text); font-size:0.88rem; }
+  /* ── Photo section ── */
+  .photo-section {
+    background: var(--surface); border: 1.5px solid var(--border-light);
+    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .photo-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0;
+  }
+  .photo-btns { display: flex; gap: 8px; align-items: center; }
+  .photo-upload-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; background: var(--accent); color: #fff;
+    border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; font-family: var(--sans);
+    white-space: nowrap;
+  }
+  .photo-upload-btn:hover { background: #0055a8; }
+  .photo-delete-btn {
+    padding: 7px 12px; background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 0.78rem; font-weight: 600; color: var(--red);
+    cursor: pointer; font-family: var(--sans);
+  }
+  .photo-preview {
+    width: 100%; border-radius: 10px; overflow: hidden;
+    border: 1.5px solid var(--border-light);
+  }
+  .photo-preview img { width: 100%; display: block; object-fit: contain; max-height: 400px; }
+  .photo-empty { font-size: 0.78rem; color: var(--text-dim); text-align: center; padding: 6px 0 0; }
+  .photo-view-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; background: var(--surface); color: var(--accent);
+    border: 1.5px solid var(--accent); border-radius: 8px;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    font-family: var(--sans); white-space: nowrap; transition: all 0.15s;
+  }
+  .photo-view-btn:hover { background: var(--accent-bg); }
+  .photo-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(5,20,50,0.70); z-index: 300;
+    align-items: center; justify-content: center; backdrop-filter: blur(5px);
+  }
+  .photo-modal-overlay.open { display: flex; }
+  .photo-modal {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 16px;
+    width: min(720px, calc(100vw - 24px)); max-height: calc(100vh - 40px);
+    display: flex; flex-direction: column; gap: 12px;
+    box-shadow: var(--shadow-md); animation: popIn 0.17s ease;
+  }
+  .photo-modal-header { display: flex; justify-content: space-between; align-items: center; }
+  .photo-modal-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+
   .note-text { font-size:0.74rem; color:var(--text-sub); margin-top:14px; line-height:1.8; padding:10px 14px; background:var(--bg); border-radius:8px; }
 
   /* ── Image modal ── */
@@ -307,13 +366,44 @@
       <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
+    <!-- 休み希望画像 -->
+    <div class="photo-section">
+      <div class="photo-header">
+        <span class="section-label" style="margin-bottom:0">休み希望画像</span>
+        <div class="photo-btns">
+          <label class="photo-upload-btn" id="photo-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            撮影・選択
+            <input type="file" accept="image/*" capture="environment" id="photo-input" style="display:none" onchange="handlePhoto(event)">
+          </label>
+          <button class="photo-view-btn" id="photo-view" onclick="openPhotoModal()" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            休み希望画像
+          </button>
+          <button class="photo-delete-btn" id="photo-delete" onclick="deletePhoto()" style="display:none">削除</button>
+        </div>
+      </div>
+      <p class="photo-empty" id="photo-empty">この月の画像はまだありません</p>
+    </div>
+
+    <!-- 画像モーダル -->
+    <div class="photo-modal-overlay" id="photoModalOverlay">
+      <div class="photo-modal">
+        <div class="photo-modal-header">
+          <h3 id="photo-modal-title">休み希望画像</h3>
+          <button class="close-btn" onclick="closePhotoModal()">✕</button>
+        </div>
+        <img id="photo-img" src="" alt="休み希望画像" style="width:100%;border-radius:8px;object-fit:contain;max-height:calc(100vh - 140px);">
+      </div>
+    </div>
+
     <div class="legend">
       <div class="legend-item"><span class="dot dot-night"></span>夜勤</div>
       <div class="legend-item"><span class="dot dot-after"></span>夜勤明け（自動）</div>
       <div class="legend-item"><span class="dot dot-nikki"></span>日直</div>
       <div class="legend-item"><span class="dot dot-hankki"></span>半直</div>
       <div class="legend-item"><span class="dot dot-rest"></span>全日・AM・PM休</div>
-      <div class="legend-item"><span class="dot dot-kousei"></span>厚生休暇</div>
+      <div class="legend-item"><span class="dot dot-kousei"></span>全日・AM・PM厚休</div>
       <div class="legend-item"><span class="dot dot-tokubetsu"></span>特別休暇</div>
       <div class="legend-item" style="color:var(--red)">■ 日曜</div>
       <div class="legend-item" style="color:var(--accent)">■ 土曜</div>
@@ -356,7 +446,7 @@
           <div class="rc-value" id="res-yukyu-remain">—<span class="rc-unit">日</span></div>
         </div>
         <div class="result-card highlight-kousei" id="card-kousei-remain">
-          <div class="rc-label">厚生休暇 残り</div>
+          <div class="rc-label">厚休 残り</div>
           <div class="rc-value" id="res-kousei-remain">—<span class="rc-unit">日</span></div>
         </div>
         <div class="result-card highlight-tokubetsu" id="card-tokubetsu-remain">
@@ -368,7 +458,7 @@
       <p class="note-text">
         ※ 土曜半休は月の公休に含まれます（0.5×土曜日数）。日曜・祝日は公休として自動カウントされます。<br>
         夜勤翌日（夜勤明け）は自動登録され AM出勤0.5・PM休0.5として計算されます。<br>
-        厚生休暇・特別休暇は公休・有給とは完全別枠で年度通算管理されます。
+        厚休・特別休暇は公休・有給とは完全別枠で年度通算管理されます。
       </p>
     </div>
   </div><!-- /pane-cal -->
@@ -403,7 +493,7 @@
       <div class="settings-card">
         <h3 style="color:var(--kousei)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 4V2"/><path d="M12 14v-2"/><path d="M4.93 5.93l1.41 1.41"/><path d="M17.66 5.93l-1.41 1.41"/><path d="M2 8h2"/><path d="M20 8h2"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 21c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>
-          厚生休暇
+          厚休
         </h3>
         <div class="settings-row">
           <label>保有日数（デフォルト 4.0日）</label>
@@ -448,7 +538,7 @@
 
       <p class="settings-note">
         ※ 年度初めに保有日数を入力してください。カレンダーで使用した分が自動で差し引かれます。<br>
-        厚生休暇のデフォルトは4.0日です。変更した場合は自動で保存されます。
+        厚休のデフォルトは4.0日です。変更した場合は自動で保存されます。
       </p>
     </div>
   </div><!-- /pane-settings -->
@@ -489,7 +579,9 @@ const MODES=[
   {key:"rest-full",icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,label:"全日休", desc:"1.0休暇", cls:"mode-rest-full"},
   {key:"rest-am",  icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="2" y1="18" x2="4" y2="18"/><line x1="20" y1="18" x2="22" y2="18"/><line x1="19.78" y1="10.22" x2="18.36" y2="11.64"/><line x1="23" y1="22" x2="1" y2="22"/></svg>`,  label:"AM休",   desc:"0.5休暇", cls:"mode-rest-am"},
   {key:"rest-pm",  icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="2" y1="18" x2="4" y2="18"/><line x1="20" y1="18" x2="22" y2="18"/><line x1="19.78" y1="10.22" x2="18.36" y2="11.64"/><line x1="23" y1="22" x2="1" y2="22"/></svg>`,  label:"PM休",   desc:"0.5休暇", cls:"mode-rest-pm"},
-  {key:"kousei",   icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 4V2"/><path d="M12 14v-2"/><path d="M4.93 5.93l1.41 1.41"/><path d="M17.66 5.93l-1.41 1.41"/><path d="M2 8h2"/><path d="M20 8h2"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 21c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>`,   label:"厚生",   desc:"別枠",    cls:"mode-kousei"},
+  {key:"kousei-full",icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 4V2"/><path d="M12 14v-2"/><path d="M4.93 5.93l1.41 1.41"/><path d="M17.66 5.93l-1.41 1.41"/><path d="M2 8h2"/><path d="M20 8h2"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 21c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>`,label:"全日厚休",desc:"1.0別枠",cls:"mode-kousei-full"},
+  {key:"kousei-am",  icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 4V2"/><path d="M12 14v-2"/><path d="M4.93 5.93l1.41 1.41"/><path d="M17.66 5.93l-1.41 1.41"/><path d="M2 8h2"/><path d="M20 8h2"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 21c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>`,label:"AM厚休", desc:"0.5別枠",cls:"mode-kousei-am"},
+  {key:"kousei-pm",  icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 4V2"/><path d="M12 14v-2"/><path d="M4.93 5.93l1.41 1.41"/><path d="M17.66 5.93l-1.41 1.41"/><path d="M2 8h2"/><path d="M20 8h2"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 21c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>`,label:"PM厚休", desc:"0.5別枠",cls:"mode-kousei-pm"},
   {key:"tokubetsu",icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,label:"特別",   desc:"別枠",    cls:"mode-tokubetsu"},
   {key:"clear",    icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,    label:"クリア", desc:"削除",    cls:"mode-clear"},
 ];
@@ -511,8 +603,12 @@ function getDay(ds){
 function calcDayRestCost(ds,y,m,d){
   const dow=getDOW(y,m,d),day=getDay(ds);
   const isSun=dow===0,isSat=dow===6,isHol=isHoliday(ds);
-  // 厚生・特別休暇は公休と無関係
-  if(day.special==="kousei"||day.special==="tokubetsu") return 0;
+  // 特別休暇：公休消費なし
+  if(day.special==="tokubetsu") return 0;
+  // 厚休：種別ごとに公休への影響を計算
+  if(day.special==="kousei-full") return 0;       // 全日厚休：公休消費なし
+  if(day.special==="kousei-am") return isSat ? 0.5 : 0; // AM厚休：土曜はPM公休0.5が残る
+  if(day.special==="kousei-pm") return 0;          // PM厚休：AM出勤扱い、公休消費なし
   // 夜勤：出勤扱い（公休消費なし）
   if(day.shift==="night") return 0;
   // 日直：1.0出勤扱い（公休消費なし）
@@ -540,7 +636,10 @@ function calcYearlyUsage(){
     let monthTotal=0;
     for(let d=1;d<=days;d++){
       const ds=dateStr(y,m,d),day=getDay(ds);
-      if(day.special==="kousei"){kousei+=1.0;continue;}
+      const dow2=getDOW(y,m,d),isSat2=dow2===6;
+      if(day.special==="kousei-full"){kousei+=1.0;continue;}
+      if(day.special==="kousei-am"){kousei+=0.5;if(isSat2)monthTotal+=0.5;continue;}
+      if(day.special==="kousei-pm"){kousei+=0.5;continue;}
       if(day.special==="tokubetsu"){tokubetsu+=1.0;continue;}
       monthTotal+=calcDayRestCost(ds,y,m,d);
     }
@@ -611,7 +710,9 @@ function applyModeToDay(ds,y,m,d){
   else if(currentMode==="rest-full"){day.shift=null;day.rest="full";day.special=null;}
   else if(currentMode==="rest-am"){day.shift=null;day.rest="am";day.special=null;}
   else if(currentMode==="rest-pm"){day.shift=null;day.rest="pm";day.special=null;}
-  else if(currentMode==="kousei"){day.shift=null;day.rest=null;day.special="kousei";}
+  else if(currentMode==="kousei-full"){day.shift=null;day.rest=null;day.special="kousei-full";}
+  else if(currentMode==="kousei-am"){day.shift=null;day.rest=null;day.special="kousei-am";}
+  else if(currentMode==="kousei-pm"){day.shift=null;day.rest=null;day.special="kousei-pm";}
   else if(currentMode==="tokubetsu"){day.shift=null;day.rest=null;day.special="tokubetsu";}
   buildAll();
 }
@@ -662,7 +763,9 @@ function buildCalendar(){
     else if(day.rest==="full")       cls+=" tagged-rest-full";
     else if(day.rest==="am")         cls+=" tagged-rest-am";
     else if(day.rest==="pm")         cls+=" tagged-rest-pm";
-    else if(day.special==="kousei")  cls+=" tagged-kousei";
+    else if(day.special==="kousei-full")cls+=" tagged-kousei";
+    else if(day.special==="kousei-am") cls+=" tagged-kousei";
+    else if(day.special==="kousei-pm") cls+=" tagged-kousei";
     else if(day.special==="tokubetsu") cls+=" tagged-tokubetsu";
     cell.className=cls; cell.onclick=()=>applyModeToDay(ds,y,m,d);
     const numEl=document.createElement("div"); numEl.className="day-num"; numEl.textContent=d; cell.appendChild(numEl);
@@ -675,7 +778,9 @@ function buildCalendar(){
     if(day.rest==="full")      addTag("全休","tag-rest-full");
     if(day.rest==="am")        addTag("AM休","tag-rest-am");
     if(day.rest==="pm")        addTag("PM休","tag-rest-pm");
-    if(day.special==="kousei")     addTag("厚生","tag-kousei");
+    if(day.special==="kousei-full") addTag("全厚休","tag-kousei");
+    if(day.special==="kousei-am"){addTag("AM厚休","tag-kousei"); if(isSat) addTag("PM休","tag-rest-pm");}
+    if(day.special==="kousei-pm")   addTag("PM厚休","tag-kousei");
     if(day.special==="tokubetsu")  addTag("特別","tag-tokubetsu");
     if(isSat&&!day.shift&&!day.rest&&!day.special&&!day.afterNight) addTag("PM休","tag-rest-pm");
     if((isSun||isHol)&&!day.shift&&!day.afterNight&&!day.special)   addTag("休","tag-rest-full");
@@ -693,7 +798,9 @@ function calcAndRender(){
     const isSun=dow===0,isSat=dow===6,isHol=isHoliday(ds);
     const cost=calcDayRestCost(ds,y,m,d);
     total+=cost;
-    if(day.special==="kousei") monthKousei+=1.0;
+    if(day.special==="kousei-full"){ monthKousei+=1.0; }
+    else if(day.special==="kousei-am"){ monthKousei+=0.5; if(isSat) sat+=0.5; }
+    else if(day.special==="kousei-pm"){ monthKousei+=0.5; }
     else if(day.afterNight) nightAfter+=cost;
     else if(isSun||isHol) sunHol+=cost;
     else if(isSat&&!day.shift) sat+=cost;
@@ -735,13 +842,13 @@ function calcAndRender(){
       <span class="br-val" style="color:var(--text);font-size:0.95rem;">${total} 日</span>
     </div>
     ${yukyu>0?`<div class="breakdown-row"><span class="br-label" style="color:var(--red);font-weight:700;">→ 今月の有給使用</span><span class="br-val" style="color:var(--red);">${yukyu} 日</span></div>`:""}
-    ${yearly.kousei>0?`<div class="breakdown-row"><span class="br-label" style="color:var(--kousei);font-weight:700;">厚生休暇使用（年度累計）</span><span class="br-val" style="color:var(--kousei);">${yearly.kousei} 日</span></div>`:""}
+    ${yearly.kousei>0?`<div class="breakdown-row"><span class="br-label" style="color:var(--kousei);font-weight:700;">厚休使用（年度累計）</span><span class="br-val" style="color:var(--kousei);">${yearly.kousei} 日</span></div>`:""}
     ${yearly.tokubetsu>0?`<div class="breakdown-row"><span class="br-label" style="color:var(--tokubetsu);font-weight:700;">特別休暇使用（年度累計）</span><span class="br-val" style="color:var(--tokubetsu);">${yearly.tokubetsu} 日</span></div>`:""}
   `;
 }
 
 function buildAll(){
-  buildMonthGrid(); buildModeGrid(); buildCalendar(); calcAndRender(); saveData();
+  buildMonthGrid(); buildModeGrid(); buildCalendar(); calcAndRender(); saveData(); loadPhoto();
 }
 
 function openImgModal(){document.getElementById("imgModalOverlay").classList.add("open");}
@@ -772,6 +879,78 @@ document.querySelectorAll(".tab-btn").forEach(function(btn){
     switchTab(this.getAttribute("data-tab"));
   });
 });
+
+// ── 写真メモ ──────────────────────────────────────────────────────────────────
+function getPhotoKey(){
+  const mo=MONTHS[currentMonthIdx];
+  return "photo_"+mo.year+"_"+mo.month;
+}
+
+function handlePhoto(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    // 画像を圧縮してから保存
+    const img=new window.Image();
+    img.onload=function(){
+      const canvas=document.createElement("canvas");
+      const MAX=1200;
+      let w=img.width, h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      canvas.width=w; canvas.height=h;
+      canvas.getContext("2d").drawImage(img,0,0,w,h);
+      const compressed=canvas.toDataURL("image/jpeg",0.7);
+      try{
+        localStorage.setItem(getPhotoKey(), compressed);
+        showPhoto(compressed);
+      } catch(err){
+        alert("写真の保存に失敗しました。容量が不足している可能性があります。");
+      }
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  // inputをリセット（同じファイルを再選択できるように）
+  e.target.value="";
+}
+
+function showPhoto(src){
+  document.getElementById("photo-img").src=src;
+  document.getElementById("photo-empty").style.display="none";
+  document.getElementById("photo-view").style.display="inline-flex";
+  document.getElementById("photo-delete").style.display="inline-flex";
+}
+
+function hidePhoto(){
+  document.getElementById("photo-img").src="";
+  document.getElementById("photo-empty").style.display="block";
+  document.getElementById("photo-view").style.display="none";
+  document.getElementById("photo-delete").style.display="none";
+}
+
+function openPhotoModal(){
+  const mo=MONTHS[currentMonthIdx];
+  document.getElementById("photo-modal-title").textContent=mo.year+"年"+mo.month+"月 休み希望画像";
+  document.getElementById("photoModalOverlay").classList.add("open");
+}
+
+function closePhotoModal(){
+  document.getElementById("photoModalOverlay").classList.remove("open");
+}
+
+function deletePhoto(){
+  if(!confirm("この月の写真を削除しますか？")) return;
+  localStorage.removeItem(getPhotoKey());
+  hidePhoto();
+}
+
+function loadPhoto(){
+  const src=localStorage.getItem(getPhotoKey());
+  if(src) showPhoto(src);
+  else hidePhoto();
+}
 </script>
 </body>
 </html>
