@@ -293,6 +293,7 @@
     border: 1.5px solid var(--border-light);
   }
   .photo-preview img { width: 100%; display: block; object-fit: contain; max-height: 400px; }
+  .photo-date  { font-size: 0.72rem; color: var(--text-sub); font-weight: 600; margin-top: 6px; }
   .photo-empty { font-size: 0.78rem; color: var(--text-dim); text-align: center; padding: 6px 0 0; }
   .photo-view-btn {
     display: inline-flex; align-items: center; gap: 6px;
@@ -374,7 +375,7 @@
           <label class="photo-upload-btn" id="photo-label">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             撮影・選択
-            <input type="file" accept="image/*" capture="environment" id="photo-input" style="display:none" onchange="handlePhoto(event)">
+            <input type="file" accept="image/*" id="photo-input" style="display:none" onchange="handlePhoto(event)">
           </label>
           <button class="photo-view-btn" id="photo-view" onclick="openPhotoModal()" style="display:none">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -383,6 +384,7 @@
           <button class="photo-delete-btn" id="photo-delete" onclick="deletePhoto()" style="display:none">削除</button>
         </div>
       </div>
+      <p class="photo-date" id="photo-date"></p>
       <p class="photo-empty" id="photo-empty">この月の画像はまだありません</p>
     </div>
 
@@ -903,8 +905,11 @@ function handlePhoto(e){
       canvas.getContext("2d").drawImage(img,0,0,w,h);
       const compressed=canvas.toDataURL("image/jpeg",0.7);
       try{
-        localStorage.setItem(getPhotoKey(), compressed);
-        showPhoto(compressed);
+        const now=new Date();
+        const dateLabel=now.getFullYear()+"年"+(now.getMonth()+1)+"月"+now.getDate()+"日";
+        const payload=JSON.stringify({src:compressed,date:dateLabel});
+        localStorage.setItem(getPhotoKey(), payload);
+        showPhoto(compressed, dateLabel);
       } catch(err){
         alert("写真の保存に失敗しました。容量が不足している可能性があります。");
       }
@@ -916,11 +921,13 @@ function handlePhoto(e){
   e.target.value="";
 }
 
-function showPhoto(src){
+function showPhoto(src, dateLabel){
   document.getElementById("photo-img").src=src;
   document.getElementById("photo-empty").style.display="none";
   document.getElementById("photo-view").style.display="inline-flex";
   document.getElementById("photo-delete").style.display="inline-flex";
+  const dateEl=document.getElementById("photo-date");
+  if(dateEl) dateEl.textContent=dateLabel ? dateLabel+"時点" : "";
 }
 
 function hidePhoto(){
@@ -928,6 +935,8 @@ function hidePhoto(){
   document.getElementById("photo-empty").style.display="block";
   document.getElementById("photo-view").style.display="none";
   document.getElementById("photo-delete").style.display="none";
+  const dateEl=document.getElementById("photo-date");
+  if(dateEl) dateEl.textContent="";
 }
 
 function openPhotoModal(){
@@ -947,9 +956,15 @@ function deletePhoto(){
 }
 
 function loadPhoto(){
-  const src=localStorage.getItem(getPhotoKey());
-  if(src) showPhoto(src);
-  else hidePhoto();
+  const raw=localStorage.getItem(getPhotoKey());
+  if(!raw){ hidePhoto(); return; }
+  try{
+    const data=JSON.parse(raw);
+    if(data.src) showPhoto(data.src, data.date||"");
+    else showPhoto(raw, ""); // 旧形式互換
+  } catch(e){
+    showPhoto(raw, ""); // 旧形式互換
+  }
 }
 </script>
 </body>
