@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -737,10 +738,32 @@ function buildMonthGrid(){
 
 // ── カレンダー ────────────────────────────────────────────────────────────────
 function markAfterNightsForMonth(y,m,days){
+  // まず今月分をクリア
   for(let d=1;d<=days;d++){const ds=dateStr(y,m,d);if(dayData[ds]) dayData[ds].afterNight=false;}
+  // 前月末の夜勤チェック（月またぎ）
+  const prevMonth=m===1?12:m-1;
+  const prevYear=m===1?y-1:y;
+  const prevDays=daysInMonth(prevYear,prevMonth);
+  const prevLastDs=dateStr(prevYear,prevMonth,prevDays);
+  const prevLastDay=dayData[prevLastDs];
+  if(prevLastDay&&prevLastDay.shift==="night"){
+    const first=getDay(dateStr(y,m,1));
+    first.afterNight=true; first.shift=null;
+  }
+  // 今月内の夜勤明け設定
   for(let d=1;d<=days;d++){
     const ds=dateStr(y,m,d),day=dayData[ds];
-    if(day&&day.shift==="night"&&d<days){const next=getDay(dateStr(y,m,d+1));next.afterNight=true;next.shift=null;}
+    if(day&&day.shift==="night"){
+      if(d<days){
+        const next=getDay(dateStr(y,m,d+1));
+        next.afterNight=true; next.shift=null;
+      } else {
+        const nextMonth=m===12?1:m+1;
+        const nextYear=m===12?y+1:y;
+        const next=getDay(dateStr(nextYear,nextMonth,1));
+        next.afterNight=true; next.shift=null;
+      }
+    }
   }
 }
 
