@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -143,10 +142,8 @@
   /* ── Mode panel ── */
   .mode-panel { background: var(--surface); border: 1.5px solid var(--border-light); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 18px; box-shadow: var(--shadow-sm); }
   .mode-panel .section-label { margin-bottom: 11px; }
-  .mode-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
-  /* iPhone SE以下のみ折り返し */
-  @media (max-width: 500px) { .mode-grid { grid-template-columns: repeat(6, 1fr); } }
-  @media (max-width: 375px) { .mode-grid { grid-template-columns: repeat(4, 1fr); } }
+  .mode-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  @media (max-width: 400px) { .mode-grid { grid-template-columns: repeat(4, 1fr); } }
   .mode-btn {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
     padding: 8px 2px 6px; border-radius: 10px; border: 1.5px solid var(--border-light);
@@ -179,6 +176,8 @@
   .mode-btn.mode-kousei-pm.active-mode .mode-icon   { color:var(--kousei); }
   .mode-btn.mode-tokubetsu.active-mode { border-color:var(--tokubetsu); background:var(--tokubetsu-bg); }
   .mode-btn.mode-tokubetsu.active-mode .mode-icon { color:var(--tokubetsu); }
+  .mode-btn.mode-ng.active-mode        { border-color:#cc1818; background:#fde8e8; }
+  .mode-btn.mode-ng.active-mode .mode-icon { color:#cc1818; }
   .mode-btn.mode-clear.active-mode     { border-color:#888; background:#ebebeb; }
   .mode-btn.mode-clear.active-mode .mode-icon { color:#555; }
   .mode-hint { margin-top: 10px; font-size: 0.78rem; color: var(--text-sub); font-weight: 500; min-height: 1.4em; }
@@ -212,12 +211,13 @@
   .cal-cell.tagged-rest-pm   { border-color:#0a9a5a; background:#eafaf2; }
   .cal-cell.tagged-kousei    { border-color:#7b3fa0; background:#f3e8ff; }
   .cal-cell.tagged-tokubetsu { border-color:#c05800; background:#fff0e0; }
-  .cal-cell .day-num { font-size: 0.84rem; font-weight: 700; line-height: 1; color: var(--text); flex-shrink: 0; }
+  .cal-cell.tagged-ng        { border-color:#cc1818; background:#fde8e8; }
+  .cal-cell .day-num { font-size: 1.0rem; font-weight: 700; line-height: 1; color: var(--text); flex-shrink: 0; }
   .cal-cell.sunday .day-num  { color: var(--red); }
   .cal-cell.saturday .day-num { color: var(--accent); }
   .cal-cell.holiday .day-num  { color: var(--accent2); }
   .cal-cell .tag-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1px; width: 100%; min-width: 0; }
-  .mini-tag { font-size: 0.46rem; padding: 1px 2px; border-radius: 2px; line-height: 1.4; font-weight: 700; white-space: nowrap; }
+  .mini-tag { font-size: 0.58rem; padding: 1px 3px; border-radius: 3px; line-height: 1.4; font-weight: 700; white-space: nowrap; }
   .tag-night     { background:#c0d8ff; color:#003890; }
   .tag-after     { background:#d8e8ff; color:#205898; }
   .tag-nikki     { background:#ffe0a0; color:#704000; }
@@ -227,6 +227,7 @@
   .tag-rest-pm   { background:#c0f0d8; color:#065838; }
   .tag-kousei    { background:#e8d0ff; color:#5a1080; }
   .tag-tokubetsu { background:#ffd8b0; color:#803000; }
+  .tag-ng         { background:#fcc; color:#a00; }
 
   /* ── Legend ── */
   .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; padding: 11px 14px; background: var(--surface); border-radius: 10px; border: 1px solid var(--border-light); }
@@ -412,6 +413,7 @@
       <div class="legend-item"><span class="dot dot-rest"></span>全日・AM・PM休</div>
       <div class="legend-item"><span class="dot dot-kousei"></span>全日・AM・PM厚休</div>
       <div class="legend-item"><span class="dot dot-tokubetsu"></span>特別休暇</div>
+    <div class="legend-item"><span class="dot" style="background:#cc1818"></span>休み不可</div>
       <div class="legend-item" style="color:var(--red)">■ 日曜</div>
       <div class="legend-item" style="color:var(--accent)">■ 土曜</div>
       <div class="legend-item" style="color:var(--accent2)">■ 祝日</div>
@@ -590,6 +592,7 @@ const MODES=[
   {key:"kousei-am",  icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 4V2"/><path d="M12 14v-2"/><path d="M4.93 5.93l1.41 1.41"/><path d="M17.66 5.93l-1.41 1.41"/><path d="M2 8h2"/><path d="M20 8h2"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 21c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>`,label:"AM厚休", desc:"0.5別枠",cls:"mode-kousei-am"},
   {key:"kousei-pm",  icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 4V2"/><path d="M12 14v-2"/><path d="M4.93 5.93l1.41 1.41"/><path d="M17.66 5.93l-1.41 1.41"/><path d="M2 8h2"/><path d="M20 8h2"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 21c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>`,label:"PM厚休", desc:"0.5別枠",cls:"mode-kousei-pm"},
   {key:"tokubetsu",icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,label:"特別",   desc:"別枠",    cls:"mode-tokubetsu"},
+  {key:"ng",      icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`,      label:"休み不可", desc:"表示のみ",  cls:"mode-ng"},
   {key:"clear",    icon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,    label:"クリア", desc:"削除",    cls:"mode-clear"},
 ];
 
@@ -612,6 +615,7 @@ function calcDayRestCost(ds,y,m,d){
   const isSun=dow===0,isSat=dow===6,isHol=isHoliday(ds);
   // 特別休暇：公休消費なし
   if(day.special==="tokubetsu") return 0;
+  if(day.special==="ng") return 0;
   // 厚休：種別ごとに公休への影響を計算
   if(day.special==="kousei-full") return 0;       // 全日厚休：公休消費なし
   if(day.special==="kousei-am") return isSat ? 0.5 : 0; // AM厚休：土曜はPM公休0.5が残る
@@ -721,6 +725,7 @@ function applyModeToDay(ds,y,m,d){
   else if(currentMode==="kousei-am"){day.shift=null;day.rest=null;day.special="kousei-am";}
   else if(currentMode==="kousei-pm"){day.shift=null;day.rest=null;day.special="kousei-pm";}
   else if(currentMode==="tokubetsu"){day.shift=null;day.rest=null;day.special="tokubetsu";}
+  else if(currentMode==="ng"){day.shift=null;day.rest=null;day.special="ng";}
   buildAll();
 }
 
@@ -796,6 +801,7 @@ function buildCalendar(){
     else if(day.special==="kousei-am") cls+=" tagged-kousei";
     else if(day.special==="kousei-pm") cls+=" tagged-kousei";
     else if(day.special==="tokubetsu") cls+=" tagged-tokubetsu";
+    else if(day.special==="ng")        cls+=" tagged-ng";
     cell.className=cls; cell.onclick=()=>applyModeToDay(ds,y,m,d);
     const numEl=document.createElement("div"); numEl.className="day-num"; numEl.textContent=d; cell.appendChild(numEl);
     const tagRow=document.createElement("div"); tagRow.className="tag-row";
@@ -811,6 +817,7 @@ function buildCalendar(){
     if(day.special==="kousei-am"){addTag("AM厚休","tag-kousei"); if(isSat) addTag("PM休","tag-rest-pm");}
     if(day.special==="kousei-pm")   addTag("PM厚休","tag-kousei");
     if(day.special==="tokubetsu")  addTag("特別","tag-tokubetsu");
+    if(day.special==="ng")         addTag("休不可","tag-ng");
     if(isSat&&!day.shift&&!day.rest&&!day.special&&!day.afterNight) addTag("PM休","tag-rest-pm");
     if((isSun||isHol)&&!day.shift&&!day.afterNight&&!day.special)   addTag("休","tag-rest-full");
     cell.appendChild(tagRow); grid.appendChild(cell);
