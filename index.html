@@ -143,7 +143,6 @@
   .mode-panel { background: var(--surface); border: 1.5px solid var(--border-light); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 18px; box-shadow: var(--shadow-sm); }
   .mode-panel .section-label { margin-bottom: 11px; }
   .mode-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
-  @media (max-width: 400px) { .mode-grid { grid-template-columns: repeat(4, 1fr); } }
   .mode-btn {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
     padding: 8px 2px 6px; border-radius: 10px; border: 1.5px solid var(--border-light);
@@ -153,6 +152,7 @@
   .mode-btn:hover { border-color: var(--accent-light); background: var(--accent-bg); }
   .mode-btn .mode-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-sub); }
   .mode-btn .mode-icon svg { display: block; width: 18px; height: 18px; }
+  .mode-btn .mode-text { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 0; }
   .mode-btn .mode-label { font-size: 0.62rem; font-weight: 700; color: var(--text); white-space: nowrap; }
   .mode-btn .mode-desc  { font-size: 0.52rem; color: var(--text-dim); white-space: nowrap; }
   .mode-btn.active-mode { border-width: 2px; box-shadow: 0 0 0 3px rgba(0,103,192,0.13); }
@@ -696,7 +696,7 @@ function buildModeGrid(){
   MODES.forEach(mo=>{
     const btn=document.createElement("button");
     btn.className=`mode-btn ${mo.cls}${currentMode===mo.key?" active-mode":""}`;
-    btn.innerHTML=`<span class="mode-icon">${mo.icon}</span><span class="mode-label">${mo.label}</span><span class="mode-desc">${mo.desc}</span>`;
+    btn.innerHTML=`<span class="mode-icon">${mo.icon}</span><span class="mode-text"><span class="mode-label">${mo.label}</span><span class="mode-desc">${mo.desc}</span></span>`;
     btn.onclick=()=>selectMode(mo.key);
     grid.appendChild(btn);
   });
