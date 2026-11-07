@@ -916,7 +916,63 @@ document.querySelectorAll(".tab-btn").forEach(function(btn){
   });
 });
 
-// ── 写真メモ ──────────────────────────────────────────────────────────────────
+// ── 写真メモ（IndexedDB保存） ─────────────────────────────────────────────────
+const PHOTO_DB="yukyu_photos", PHOTO_STORE="photos";
+let _photoDbP=null;
+function photoDB(){
+  if(_photoDbP) return _photoDbP;
+  _photoDbP=new Promise(function(resolve,reject){
+    const req=indexedDB.open(PHOTO_DB,1);
+    req.onupgradeneeded=function(){ req.result.createObjectStore(PHOTO_STORE); };
+    req.onsuccess=function(){ resolve(req.result); };
+    req.onerror=function(){ _photoDbP=null; reject(req.error); };
+  });
+  return _photoDbP;
+}
+function idbGet(key){
+  return photoDB().then(function(db){return new Promise(function(res,rej){
+    const r=db.transaction(PHOTO_STORE,"readonly").objectStore(PHOTO_STORE).get(key);
+    r.onsuccess=function(){res(r.result);}; r.onerror=function(){rej(r.error);};
+  });});
+}
+function idbSet(key,val){
+  return photoDB().then(function(db){return new Promise(function(res,rej){
+    const tx=db.transaction(PHOTO_STORE,"readwrite");
+    tx.objectStore(PHOTO_STORE).put(val,key);
+    tx.oncomplete=function(){res();}; tx.onerror=function(){rej(tx.error);}; tx.onabort=function(){rej(tx.error);};
+  });});
+}
+function idbDel(key){
+  return photoDB().then(function(db){return new Promise(function(res,rej){
+    const tx=db.transaction(PHOTO_STORE,"readwrite");
+    tx.objectStore(PHOTO_STORE).delete(key);
+    tx.oncomplete=function(){res();}; tx.onerror=function(){rej(tx.error);};
+  });});
+}
+
+// 旧形式（localStorageのphoto_*）をIndexedDBへ移行
+async function migratePhotos(){
+  try{
+    const keys=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k && k.indexOf("photo_")===0) keys.push(k);
+    }
+    for(const k of keys){
+      const raw=localStorage.getItem(k);
+      let data;
+      try{ const p=JSON.parse(raw); data=(p&&p.src)?p:{src:raw,date:""}; }
+      catch(e){ data={src:raw,date:""}; }
+      await idbSet(k,data);
+      localStorage.removeItem(k);
+    }
+    if(keys.length) saveData();
+  }catch(e){}
+}
+
+// 永続化をリクエスト（iOSによる自動削除を防ぐ）
+try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+
 function getPhotoKey(){
   const mo=MONTHS[currentMonthIdx];
   return "photo_"+mo.year+"_"+mo.month;
@@ -925,33 +981,32 @@ function getPhotoKey(){
 function handlePhoto(e){
   const file=e.target.files[0];
   if(!file) return;
+  const key=getPhotoKey();
   const reader=new FileReader();
   reader.onload=function(ev){
-    // 画像を圧縮してから保存
     const img=new window.Image();
-    img.onload=function(){
+    img.onload=async function(){
       const canvas=document.createElement("canvas");
-      const MAX=1200;
+      const MAX=1600;
       let w=img.width, h=img.height;
       if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
       if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
       canvas.width=w; canvas.height=h;
       canvas.getContext("2d").drawImage(img,0,0,w,h);
-      const compressed=canvas.toDataURL("image/jpeg",0.7);
+      const compressed=canvas.toDataURL("image/jpeg",0.75);
+      const now=new Date();
+      const dateLabel=now.getFullYear()+"年"+(now.getMonth()+1)+"月"+now.getDate()+"日";
       try{
-        const now=new Date();
-        const dateLabel=now.getFullYear()+"年"+(now.getMonth()+1)+"月"+now.getDate()+"日";
-        const payload=JSON.stringify({src:compressed,date:dateLabel});
-        localStorage.setItem(getPhotoKey(), payload);
-        showPhoto(compressed, dateLabel);
-      } catch(err){
-        alert("写真の保存に失敗しました。容量が不足している可能性があります。");
+        await idbSet(key,{src:compressed,date:dateLabel});
+        if(key===getPhotoKey()) showPhoto(compressed,dateLabel);
+      }catch(err){
+        alert("写真の保存に失敗しました。端末のストレージ容量を確認してください。");
       }
     };
+    img.onerror=function(){ alert("画像を読み込めませんでした。"); };
     img.src=ev.target.result;
   };
   reader.readAsDataURL(file);
-  // inputをリセット（同じファイルを再選択できるように）
   e.target.value="";
 }
 
@@ -983,23 +1038,32 @@ function closePhotoModal(){
   document.getElementById("photoModalOverlay").classList.remove("open");
 }
 
-function deletePhoto(){
+async function deletePhoto(){
   if(!confirm("この月の写真を削除しますか？")) return;
-  localStorage.removeItem(getPhotoKey());
+  try{ await idbDel(getPhotoKey()); }catch(e){}
   hidePhoto();
 }
 
-function loadPhoto(){
-  const raw=localStorage.getItem(getPhotoKey());
-  if(!raw){ hidePhoto(); return; }
+async function loadPhoto(){
+  const key=getPhotoKey();
   try{
-    const data=JSON.parse(raw);
-    if(data.src) showPhoto(data.src, data.date||"");
-    else showPhoto(raw, ""); // 旧形式互換
-  } catch(e){
-    showPhoto(raw, ""); // 旧形式互換
+    let data=await idbGet(key);
+    if(key!==getPhotoKey()) return; // 読込中に月が切り替わった
+    if(data && data.src) showPhoto(data.src, data.date||"");
+    else hidePhoto();
+  }catch(e){
+    // IndexedDBが使えない場合の旧形式フォールバック
+    try{
+      const raw=localStorage.getItem(key);
+      if(!raw){ hidePhoto(); return; }
+      const p=JSON.parse(raw);
+      if(p&&p.src) showPhoto(p.src,p.date||""); else hidePhoto();
+    }catch(e2){ hidePhoto(); }
   }
 }
+
+// 起動時に旧データを移行してから表示
+migratePhotos().then(loadPhoto);
 </script>
 </body>
 </html>
